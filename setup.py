@@ -11,13 +11,13 @@ def read(fname):
 
 setup(
     name="pysodium",
-    version="0.6.8",
-    author="Stefan Marsiske",
-    author_email="s@ctrlc.hu",
-    description="python libsodium wrapper",
+    version="0.6.8-ewa",
+    author="Eric Anderson",
+    author_email="",
+    description="python libsodium wrapper (Eric Anderson's fork)",
     license="BSD",
     keywords="cryptography API NaCl libsodium",
-    url="https://github.com/stef/pysodium",
+    url="https://github.com/ewa/pysodium",
     packages=find_packages(),
     long_description=read('README.md'),
     requires=["libsodium"],

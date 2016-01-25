@@ -40,6 +40,7 @@ crypto_box_BOXZEROBYTES = sodium.crypto_box_boxzerobytes()
 crypto_box_MACBYTES = sodium.crypto_box_macbytes()
 crypto_box_SEALBYTES = sodium.crypto_box_sealbytes()
 crypto_box_SEEDBYTES = sodium.crypto_box_seedbytes()
+crypto_box_BEFORENMBYTES = sodium.crypto_box_beforenmbytes()
 crypto_secretbox_KEYBYTES = sodium.crypto_secretbox_keybytes()
 crypto_secretbox_NONCEBYTES = sodium.crypto_secretbox_noncebytes()
 crypto_secretbox_ZEROBYTES = sodium.crypto_secretbox_zerobytes()
@@ -241,6 +242,16 @@ def crypto_box_open_easy(c, nonce, pk, sk):
     __check(sodium.crypto_box_open_easy(msg, c, ctypes.c_ulonglong(len(c)), nonce, pk, sk))
     return msg.raw.decode()
 
+# int crypto_box_beforenm(unsigned char *k, const unsigned char *pk,
+#                        const unsigned char *sk);
+
+def crypto_box_beforenm(pk, sk):
+    if None in (pk, sk):
+        raise ValueError("invalid parameters")
+    k = ctypes.create_string_buffer(crypto_box_BEFORENMBYTES)
+    __check(sodium.crypto_box_beforenm(k, pk, sk))
+    return k.raw
+    
 def crypto_box(msg, nonce, pk, sk):
     if None in (msg, nonce, pk, sk):
         raise ValueError("invalid parameters")
@@ -249,6 +260,35 @@ def crypto_box(msg, nonce, pk, sk):
     __check(sodium.crypto_box(c, padded, ctypes.c_ulonglong(len(padded)), nonce, pk, sk))
     return c.raw[crypto_box_BOXZEROBYTES:]
 
+#int crypto_box_easy_afternm(unsigned char *c, const unsigned char *m,
+#                            unsigned long long mlen, const unsigned char *n,
+#                            const unsigned char *k);
+def crypto_box_easy_afternm(msg, nonce, k):
+    if None in (msg, nonce, k):
+        raise ValueError("invalid parameters")
+    c = ctypes.create_string_buffer(crypto_box_MACBYTES + len(msg))
+    __check(sodium.crypto_box_easy_afternm(c, msg.encode(), ctypes.c_ulonglong(len(msg)), nonce, k))
+    return c.raw
+
+#  int crypto_box_open_easy_afternm(unsigned char *m, const unsigned char *c,
+#                                 unsigned long long clen, const unsigned char *n,
+#                                const unsigned char *k)
+#               __attribute__ ((warn_unused_result));
+
+def crypto_box_open_easy_afternm(c, nonce, k):
+    if None in (c, nonce, k):
+        raise ValueError("invalid parameters")
+    msg = ctypes.create_string_buffer(len(c) - crypto_box_MACBYTES)
+    __check(sodium.crypto_box_open_easy_afternm(msg, c, ctypes.c_ulonglong(len(c)), nonce, k))
+    return msg.raw.decode()
+
+
+#void sodium_memzero(void * const pnt, const size_t len);
+def sodium_memzero(k):
+    if k is None:
+        raise ValueError("k better be c string buffer!")
+    __check(sodium.sodium_memzero(k, ctypes.c_ulonglong(len(k))))
+    return True
 
 def crypto_box_open(c, nonce, pk, sk):
     if None in (c, nonce, pk, sk):

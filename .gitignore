@@ -1,0 +1,4 @@
+# Build byproducts
+build/
+dist/
+pysodium.egg-info/

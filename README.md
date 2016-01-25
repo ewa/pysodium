@@ -1,3 +1,5 @@
+This is Eric Anderson's fork of [Stef's pysodium library](https://github.com/stef/pysodium).  
+
 This is a very simple wrapper around libsodium masquerading as nacl.
 
 [![Build Status](https://travis-ci.org/stef/pysodium.svg?branch=master)](https://travis-ci.org/stef/pysodium)
@@ -12,7 +14,8 @@ Constants:
 
 crypto_box_NONCEBYTES, crypto_box_PUBLICKEYBYTES,
 crypto_box_SECRETKEYBYTES, crypto_box_ZEROBYTES,
-crypto_box_BOXZEROBYTES, crypto_secretbox_KEYBYTES,
+crypto_box_BOXZEROBYTES, crypto_box_BEFORENMBYTES,
+crypto_secretbox_KEYBYTES,
 crypto_secretbox_NONCEBYTES, crypto_secretbox_KEYBYTES,
 crypto_secretbox_ZEROBYTES, crypto_secretbox_BOXZEROBYTES,
 crypto_sign_PUBLICKEYBYTES, crypto_sign_SECRETKEYBYTES,
@@ -55,11 +58,17 @@ crypto_box_seed_keypair(seed)
 
 crypto_box(msg, nonce, pk, sk)
 
+crypto_box_beforenm(pk, sk)
+
 crypto_box_open(c, nonce, pk, sk)
 
 crypto_box_easy(msg, nonce, pk, sk)
 
+crypto_box_easy_afternm(msg, nonce, k)
+
 crypto_box_open_easy(c, nonce, pk, sk)
+
+crypto_box_open_easy_afternm(c, nonce, k)
 
 crypto_secretbox(msg, nonce, k)
 
@@ -98,3 +107,5 @@ crypto_pwhash_scryptsalsa208sha256_str(passwd, opslimit, memlimit)
 crypto_pwhash_scryptsalsa208sha256_str_verify(stored, passwd)
 
 crypto_hash_sha256(message)
+
+sodium_memzero(k)

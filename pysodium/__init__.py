@@ -379,11 +379,15 @@ def crypto_sign_open(sm, pk):
 
 
 def crypto_sign_verify_detached(sig, msg, pk):
+    """ Returns True if signature matches """
     if None in (sig, msg, pk):
         raise ValueError
     if len(sig) != crypto_sign_BYTES:
         raise ValueError("invalid sign")
-    __check(sodium.crypto_sign_verify_detached(sig, msg, ctypes.c_ulonglong(len(msg)), pk))
+    code = sodium.crypto_sign_verify_detached(sig, msg, ctypes.c_ulonglong(len(msg)), pk)
+    if code != 0:
+        raise ValueError("Signature verification failed!")
+    return True
 
 
 # int crypto_stream_salsa20(unsigned char *c, unsigned long long clen,
